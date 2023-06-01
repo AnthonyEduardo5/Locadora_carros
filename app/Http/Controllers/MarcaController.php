@@ -18,7 +18,7 @@ class MarcaController extends Controller
     public function index()
     {
         $marcas = $this->marca->all();
-        return $marcas;
+        return response()->json($marcas, 200);
     }
 
     /**
@@ -39,8 +39,29 @@ class MarcaController extends Controller
      */
     public function store(Request $request)
     {
+        $regras = [
+            'nome' => 'required|unique:marcas',
+            'imagem' => 'required'
+        ];
+
+        $feedbak = [
+            'required' => 'O campo :attribute é obrigatório',
+            'nome.unique' => 'O nome da marca já existe.'
+        ];
+
+        $request->validate($regras, $feedbak);
+        /*     
+            STATELESS -> quando o formulário não passa pela validação, o 
+            usuário é empurrado de volta para a view do formulário para 
+            que possa corrigir o erro cometido, mas em um API não existe 
+            uma tela previamente usada para o formulário.
+
+            Para corrigir esse problema é necessário que o cliente passe
+            no cabeçalho da requisição " Accept - Application/json
+        */
+
         $marca = $this->marca->create($request->all());
-        return $marca;
+        return response()->json($marca, 201);
     }
 
     /**
@@ -52,7 +73,10 @@ class MarcaController extends Controller
     public function show($id)
     {
         $marca = $this->marca->find($id);
-        return $marca;
+        if($marca === null) {
+            return response()->json(['erro' => 'Recurso pesquisado não existe!'], 404); //json
+        }
+        return response()->json($marca, 200);
     }
 
     /**
@@ -81,8 +105,13 @@ class MarcaController extends Controller
         print_r($marca->getAttributes());//os dados antigos
         */
         $marca = $this->marca->find($id);
+        
+        if($marca === null) {
+            return response()->json(['erro' => 'Impossivel ralizar a atualização. O recurso solicitado não existe!'], 404);
+        }
+
         $marca->update($request->all());
-        return $marca;
+        return response()->json($marca, 200);
     }
 
     /**
@@ -94,7 +123,12 @@ class MarcaController extends Controller
     public function destroy($id)
     {
         $marca = $this->marca->find($id);
+
+        if($marca === null) {
+            return response()->json(['erro' => 'Impossivel ralizar a exclusão. O recurso solicitado não existe!'], 404);
+        }
+
         $marca->delete();
-        return ['msg' => 'A marca foi removida com sucesso!'];
+        return response()->json(['msg' => 'A marca foi removida com sucesso!'], 200);
     }
 }
