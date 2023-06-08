@@ -96,11 +96,6 @@ class MarcaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        /* 
-        print_r($request->all());//os dados atualizados
-        echo '<hr>';
-        print_r($marca->getAttributes());//os dados antigos
-        */
         $marca = $this->marca->find($id);
         
         if($marca === null) {
@@ -109,6 +104,7 @@ class MarcaController extends Controller
 
         if($request->method() === 'PATCH') {
             $regrasDinamicas = array();
+            
             //percorrendo todas as regras definidas no Model
             foreach($marca->rules() as $input => $regra){
 
