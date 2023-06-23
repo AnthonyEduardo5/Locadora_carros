@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Modelo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 
 class ModeloController extends Controller
@@ -19,7 +20,16 @@ class ModeloController extends Controller
      */
     public function index(Request $request)
     {
-        return response()->json($this->modelo->with('marca')->get(), 200);
+        $modelos = array();
+        
+        if($request->has('atributos')) {
+            $atributos =  $request->atributos;
+            $modelos = $this->modelo->selectRaw($atributos)->with('marca')->get();
+        } else {
+            $modelos = $this->modelo->with('marca')->get();
+        }
+        //$this->modelo->with('marca')->get()
+        return response()->json($modelos, 200);
     }
 
     /**
