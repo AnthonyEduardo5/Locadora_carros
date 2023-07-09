@@ -2,10 +2,10 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Busca de marcas</div>
 
-                    <div class="card-body">
+                <!-- Início do card de busca-->
+                <card-component titulo="Busca de marcas">
+                    <template v-slot:conteudo>
                         <div class="form-row">
                             <div class="col mb-3">
                                 <input-container-component titulo="ID" id="inputId" idHelp="IdHelp" texto-ajuda="Opcional. Informe o ID da marca.">
@@ -18,20 +18,31 @@
                                 </input-container-component>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer">
+                    </template>
+
+                    <template v-slot:rodape>
                         <button type="submit" class="btn btn-primary btn-sm float-right">Pesquisar</button>
-                    </div>
-                </div>
+                    </template>
+                </card-component>
+                <!-- Fim do card de busca-->
+
+                <!-- Início do card de listagem de marcas -->
+                <card-component titulo="Relação de marcas">
+                    <template v-slot:conteudo>
+                        <table-component></table-component>
+                    </template>
+
+                    <template v-slot:rodape>
+                        <button type="button" class="btn btn-primary btn-sm float-right">Adicionar</button>
+                    </template>
+                </card-component>
+                <!-- Fim do card de listagem de marcas -->
+
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import InputContainer from './InputContainer.vue'
-    export default {
-  components: { InputContainer },
 
-    }
 </script>
