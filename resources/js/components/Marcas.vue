@@ -69,6 +69,17 @@
 import axios from 'axios'
 
     export default {
+        computed: {
+            token() {
+                let token = document.cookie.spli('/').find(indice => {
+                    return indice.startsWith('token=')
+                })
+
+                token = token.split('=')[1]
+                token = 'Bearer ' + token
+                return token
+            }
+        },
         data() {
             return {
                 urlBase: 'http://localhost:8000/api/v1/marca',
@@ -88,7 +99,8 @@ import axios from 'axios'
                 let config = {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'Authorization': this.token
                     }
                 }
 
