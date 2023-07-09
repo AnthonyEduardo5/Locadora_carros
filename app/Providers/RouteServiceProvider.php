@@ -37,6 +37,13 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->configureRateLimiting();
 
+        
+        if ($this->app->environment('local')) {
+            $this->app['router']->getRoutes()->refreshNameLookups();
+        }
+    
+        parent::boot();
+        
         $this->routes(function () {
             Route::prefix('api')
                 ->middleware('api')
