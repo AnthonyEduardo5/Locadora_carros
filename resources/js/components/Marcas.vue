@@ -28,7 +28,7 @@
                 <!-- Início do card de listagem de marcas -->
                 <card-component titulo="Relação de marcas">
                     <template v-slot:conteudo>
-                        <table-component></table-component>
+                        <table-component :dados="marcas" :titulos="['id', 'nome', 'imagem']"></table-component>
                     </template>
 
                     <template v-slot:rodape>
@@ -95,10 +95,18 @@
         },
         methods: {
             carregarLista() {
-                axios.get(this.urlBase)
+                
+                let config = {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': this.token
+                    }
+                }
+
+                axios.get(this.urlBase, config)
                 .then(response => {
                     this.marcas = response.data
-                    console.log(this.marcas)
+                    //console.log(this.marcas)
                 })
                 .catch(errors => {
                     console.log(errors)

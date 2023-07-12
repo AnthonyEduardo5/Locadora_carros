@@ -1,38 +1,36 @@
 <template>
-    
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td colspan="2">Larry the Bird</td>
-                <td>@twitter</td>
-            </tr>
-        </tbody>
-    </table>
+    <div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th v-for="t, key in titulos" :key="key" scope="col" class="text-uppercase">{{ t }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="obj in dados" :key="obj.id">
+                    <template  v-for="valor, chave in obj">
+                        <td v-if="titulos.includes(chave)" :key="chave">
+                            <span v-if="chave == 'imagem'">
+                                <img :src="'/storage/'+valor" width="30" height="30">
+                            </span>
+                            <span v-else>
+                                {{ valor }}
+                            </span>
+                        </td>
+                    </template>
+                    <!-- 
+                    <th scope="row">{{ m.id }}</th>
+                    <td>{{ m.nome }}</td>
+                    <td><img :src="'/storage/'+m.imagem" width="30" height="30"></td>
+                     -->
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <script>
     export default {
-        
+        props: ['dados', 'titulos']
     }
 </script>
