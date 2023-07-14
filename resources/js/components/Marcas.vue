@@ -29,7 +29,7 @@
                 <card-component titulo="Relação de marcas">
                     <template v-slot:conteudo>
                         <table-component 
-                            :dados="marcas" 
+                            :dados="marcas.data" 
                             :titulos="{
                                 id: {titulo: 'ID', tipo: 'texto'},
                                 nome: {titulo: 'Nome', tipo: 'texto'},
@@ -40,7 +40,18 @@
                     </template>
 
                     <template v-slot:rodape>
-                        <button type="button" class="btn btn-primary btn-sm float-right"  data-toggle="modal" data-target="#modalMarca">Adicionar</button>
+                        <div class="row">
+                            <div class="col-10">
+                                <paginate-component>
+                                    <li v-for="l, key in marcas.links" :key="key" :class="l.active ? 'page-item active' : 'pagi-tem'" @click="paginacao(l)">
+                                        <a class="page-link" v-html="l.label"></a>
+                                    </li>
+                                </paginate-component>
+                            </div>
+                            <div class="col">
+                                <button type="button" class="btn btn-primary btn-sm float-right"  data-toggle="modal" data-target="#modalMarca">Adicionar</button>
+                            </div>
+                        </div>
                     </template>
                 </card-component>
                 <!-- Fim do card de listagem de marcas -->
@@ -78,7 +89,9 @@
 </template>
 
 <script>
+import Paginate from './Paginate.vue'
     export default {
+  components: { Paginate },
         computed: {
             token() {
                 let token = document.cookie.split(';').find(indice => {
@@ -98,10 +111,16 @@
                 arquivoImagem: [],
                 transacaoStatus: '',
                 transacaoDetalhes: {},
-                marcas: []
+                marcas: {data: []}
             }
         },
         methods: {
+            paginacao(l) {
+                if(l.url) {
+                    this.urlBase = l.url //ajutstando a url de consulta com o parâmetro de página
+                    this.carregarLista() //requisitando novamente os dados para nossa API
+                }
+            },
             carregarLista() {
                 
                 let config = {
