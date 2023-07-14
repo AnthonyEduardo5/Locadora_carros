@@ -15,7 +15,7 @@ Vue.use(Vuex)  // Usar o plugin no aplicativo
 
 const store = new Vuex.Store({
     state: {
-        teste: 'Teste de recuperaçõ de valor dar Store do Vuex'
+        item: {}
     }
 })
 /**
