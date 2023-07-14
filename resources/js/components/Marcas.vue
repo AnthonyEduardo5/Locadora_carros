@@ -8,19 +8,19 @@
                         <div class="form-row">
                             <div class="col mb-3">
                                 <input-container-component titulo="ID" id="inputId" idHelp="IdHelp" texto-ajuda="Opcional. Informe o ID da marca.">
-                                    <input type="number" class="form-control" id="inputId" aria-describedby="idHelp" placeholder="ID">
+                                    <input type="number" class="form-control" id="inputId" aria-describedby="idHelp" placeholder="ID" v-model="busca.id">
                                 </input-container-component>
                             </div>
                             <div class="col mb-3">
                                 <input-container-component titulo="Nome da marca" id="inputNome" idHelp="nomeHelp" texto-ajuda="Opcional. Informe o nome da marca.">
-                                    <input type="text" class="form-control" id="inputNome" aria-describedby="nomeHelp" placeholder="Nome da marca">
+                                    <input type="text" class="form-control" id="inputNome" aria-describedby="nomeHelp" placeholder="Nome da marca" v-model="busca.nome">
                                 </input-container-component>
                             </div>
                         </div>
                     </template>
 
                     <template v-slot:rodape>
-                        <button type="submit" class="btn btn-primary btn-sm float-right">Pesquisar</button>
+                        <button type="submit" class="btn btn-primary btn-sm float-right" @click="pesquisar()">Pesquisar</button>
                     </template>
                 </card-component>
                 <!-- Fim do card de busca-->
@@ -107,19 +107,45 @@ import Paginate from './Paginate.vue'
         data() {
             return {
                 urlBase: 'http://localhost:8000/api/v1/marca',
+                urlPaginacao: '',
+                ulrFiltro: '',
                 nomeMarca: '',
                 arquivoImagem: [],
                 transacaoStatus: '',
                 transacaoDetalhes: {},
-                marcas: {data: []}
+                marcas: {data: []},
+                busca: { id: '', nome: ''}
             }
         },
         methods: {
+            pesquisar() {
+                let filtro = ''
+
+                for(let chave in this.busca) {
+                    if(this.busca[chave]) {
+                        if(filtro != ''){
+                            filtro += ';'
+                        }
+
+                        filtro += chave + ':like:' + this.busca[chave]
+                    }
+                }
+                if(filtro != '') {
+                    this.urlPaginacao = ''
+                    this.ulrFiltro = '&filtro='+filtro
+                } else (
+                    this.ulrFiltro = ''
+                )
+
+                this.carregarLista()
+            },
             paginacao(l) {
                 if(l.url) {
-                    this.urlBase = l.url //ajutstando a url de consulta com o parâmetro de página
+                    //this.urlBase = l.url //ajutstando a url de consulta com o parâmetro de página
+                    this.urlPaginacao = l.url.split('?')[1]
                     this.carregarLista() //requisitando novamente os dados para nossa API
                 }
+
             },
             carregarLista() {
                 
@@ -130,7 +156,9 @@ import Paginate from './Paginate.vue'
                     }
                 }
 
-                axios.get(this.urlBase, config)
+                let url = this.urlBase + '?' + this.urlPaginacao + this.ulrFiltro
+
+                axios.get(url, config)
                 .then(response => {
                     this.marcas = response.data
                     //console.log(this.marcas)
