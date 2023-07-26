@@ -16,7 +16,7 @@ Vue.use(Vuex)  // Usar o plugin no aplicativo
 const store = new Vuex.Store({
     state: {
         item: {},
-        transacao : { status: '', mensagem: ''}
+        transacao : { status: '', mensagem: '', dados: '' }
     }
 })
 /**

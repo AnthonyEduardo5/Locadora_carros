@@ -67,8 +67,8 @@ class MarcaController extends Controller
             Para corrigir esse problema é necessário que o cliente passe
             no cabeçalho da requisição " Accept - Application/json
         */
-        $image = $request->file('imagem');
-        $image_urn = $image->store('imagens', 'public');
+        $imagem = $request->file('imagem');
+        $image_urn = $imagem->store('imagens', 'public');
         
         $marca = $this->marca->create([
             'nome' => $request->nome,
@@ -136,14 +136,26 @@ class MarcaController extends Controller
         } else {
             $request->validate($marca->rules(), $marca->feedback());
         }
-        
-        //remove o arquivo antigo caso um novo arquivo tenha sido enviado no request
-        if($request->file('imagem')) {
-            Storage::disk('public')->delete($marca->imagem);    
-        }
 
-        $image = $request->file('imagem');
-        $image_urn = $image->store('imagens', 'public');
+        //preenchendo o objeto $marca com todos os dados do request
+        $marca->fill($request->all());
+
+        //se a imagem foi encaminhada na requisição
+        if($request->file('imagem')) {
+            //remove o arquivo antigo caso um novo arquivo tenha sido enviado no request
+            Storage::disk('public')->delete($marca->imagem);
+
+            $imagem = $request->file('imagem');
+            $imagem_urn = $imagem->store('imagens', 'public');
+            $marca->imagem = $imagem_urn;
+        }
+        $marca->save();
+
+        return response()->json($marca, 200);
+
+        /*
+        $imagem = $request->file('imagem');
+        $image_urn = $imagem->store('imagens', 'public');
         
         //preencher o objeto $marca com os dados do request
         $marca->fill($request->all());
@@ -151,6 +163,7 @@ class MarcaController extends Controller
         $marca->save();
 
         return response()->json($marca, 200);
+        */
     }
 
     /**
