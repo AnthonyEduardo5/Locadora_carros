@@ -22,7 +22,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::prefix('v1')->middleware('jwt.auth')->group(function() {
     Route::post('me', [App\Http\Controllers\AuthController::class, 'me']);
     Route::post('logout', [App\Http\Controllers\AuthController::class, 'logout']);
-    Route::post('refresh', [App\Http\Controllers\AuthController::class, 'refresh']);
     Route::apiResource('cliente', 'ClienteController');
     Route::apiResource('carro', 'CarroController');
     Route::apiResource('locacao', 'LocacaoController');
@@ -31,3 +30,4 @@ Route::prefix('v1')->middleware('jwt.auth')->group(function() {
 });
 
 Route::post('login',  [App\Http\Controllers\AuthController::class, 'login']);
+Route::post('refresh', [App\Http\Controllers\AuthController::class, 'refresh']);
